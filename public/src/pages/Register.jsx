@@ -1,11 +1,15 @@
 import React, {useState,useEffect} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../assets/logo.jpg";
 import {ToastContainer, toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { registerRoute } from "../utils/APIRoutes";
 
 
-function Resigter() {
+function Register() {
+    const navigate = useNavigate;
     const [values, setValues] = useState({
         username: "",
         email:"",
@@ -14,18 +18,54 @@ function Resigter() {
     
     });
 
+    const toastOption = {
+                position: "bottom-right",
+                autoClose: 8000,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "dark",
+    };
 
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        alert("form");
+        if(handleValidation()){
+            console.log("in validation", registerRoute);
+            const {password, username, email} = values;
+            const {data} = await axios.post(registerRoute,{
+                username,
+                email,
+                password,
+            });
+            if(data.status===false){
+                toast.error(data.msg, toastOption);
+            }
+            if(data.status===true){
+                localStorage.setItem('chat-app-user',JSON.stringify(data.user));
+                navigate("/"); 
+            }
+            
+        }
     };
 
     const handleValidation = () => {
         const {password, confirmPassword, username, email} = values;
         if(password !== confirmPassword){
-            toast.error("Password confirmation failed. Please try again.");
+            toast.error("Password confirmation failure. Please try again.",toastOption);
+            return false;
+        } else if (username.length < 3){
+            toast.error("Username must more than 3 characters", toastOption);
+            return false;
+        } else if (password.length < 6){
+            toast.error("Password must more than 6 characters", toastOption);
+            return false;
+        }else if (email===""){
+            toast.error("Email cannot be blanked", toastOption);
+            return false;
         }
+        return true;
+        
+
     }
 
 
@@ -68,10 +108,11 @@ function Resigter() {
                     />
                     <button type="submit">Create User</button>
                     <span>
-                        Alrrady have an account ? <Link to="/login">Login</Link>
+                        Alrrady have an account ? <Link to="/Login">Login</Link>
                     </span>
                 </form>
             </FormContainer>
+            <ToastContainer/>
         </>
     )
 }
@@ -147,4 +188,4 @@ const FormContainer = styled.div`
     
 `;
 
-export default Resigter;
+export default Register;

@@ -9,7 +9,7 @@ import { registerRoute } from "../utils/APIRoutes";
 
 
 function Register() {
-    const navigate = useNavigate;
+    const navigate = useNavigate();
     const [values, setValues] = useState({
         username: "",
         email:"",
@@ -20,12 +20,16 @@ function Register() {
 
     const toastOption = {
                 position: "bottom-right",
-                autoClose: 8000,
+                autoClose: 3000,
                 pauseOnHover: true,
                 draggable: true,
                 theme: "dark",
     };
-
+    useEffect(()=> {
+        if (localStorage.getItem('chat-app-user')){
+            navigate("/");
+        }
+    },[]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -64,9 +68,7 @@ function Register() {
             return false;
         }
         return true;
-        
-
-    }
+    };
 
 
     const handleChange = (event) => { 
@@ -108,7 +110,7 @@ function Register() {
                     />
                     <button type="submit">Create User</button>
                     <span>
-                        Alrrady have an account ? <Link to="/Login">Login</Link>
+                        Already have an account ? <Link to="/login">Login</Link>
                     </span>
                 </form>
             </FormContainer>

@@ -1,8 +1,8 @@
-import React, {useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../assets/logo.jpg";
-import {ToastContainer, toast} from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { registerRoute } from "../utils/APIRoutes";
@@ -12,58 +12,58 @@ function Register() {
     const navigate = useNavigate();
     const [values, setValues] = useState({
         username: "",
-        email:"",
-        password:"",
-        confirmPassword:"",
-    
+        email: "",
+        password: "",
+        confirmPassword: "",
+
     });
 
     const toastOption = {
-                position: "bottom-right",
-                autoClose: 3000,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "dark",
+        position: "bottom-right",
+        autoClose: 3000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
     };
-    useEffect(()=> {
-        if (localStorage.getItem('chat-app-user')){
-            navigate("/");
+    useEffect(() => {
+        if (localStorage.getItem('chat-app-user')) {
+            navigate("");
         }
-    },[]);
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if(handleValidation()){
+        if (handleValidation()) {
             console.log("in validation", registerRoute);
-            const {password, username, email} = values;
-            const {data} = await axios.post(registerRoute,{
+            const { password, username, email } = values;
+            const { data } = await axios.post(registerRoute, {
                 username,
                 email,
                 password,
             });
-            if(data.status===false){
+            if (data.status === false) {
                 toast.error(data.msg, toastOption);
             }
-            if(data.status===true){
-                localStorage.setItem('chat-app-user',JSON.stringify(data.user));
-                navigate("/"); 
+            if (data.status === true) {
+                localStorage.setItem('chat-app-user', JSON.stringify(data.user));
+                navigate("/");
             }
-            
+
         }
     };
 
     const handleValidation = () => {
-        const {password, confirmPassword, username, email} = values;
-        if(password !== confirmPassword){
-            toast.error("Password confirmation failure. Please try again.",toastOption);
+        const { password, confirmPassword, username, email } = values;
+        if (password !== confirmPassword) {
+            toast.error("Password confirmation failure. Please try again.", toastOption);
             return false;
-        } else if (username.length < 3){
+        } else if (username.length < 3) {
             toast.error("Username must more than 3 characters", toastOption);
             return false;
-        } else if (password.length < 6){
+        } else if (password.length < 6) {
             toast.error("Password must more than 6 characters", toastOption);
             return false;
-        }else if (email===""){
+        } else if (email === "") {
             toast.error("Email cannot be blanked", toastOption);
             return false;
         }
@@ -71,8 +71,8 @@ function Register() {
     };
 
 
-    const handleChange = (event) => { 
-        setValues({...values,[event.target.name]:event.target.value});
+    const handleChange = (event) => {
+        setValues({ ...values, [event.target.name]: event.target.value });
     };
 
 
@@ -114,7 +114,7 @@ function Register() {
                     </span>
                 </form>
             </FormContainer>
-            <ToastContainer/>
+            <ToastContainer />
         </>
     )
 }
